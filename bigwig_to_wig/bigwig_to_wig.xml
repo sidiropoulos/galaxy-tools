@@ -1,0 +1,32 @@
+<tool id="bigwig_to_wig" name="BigWig to Wig" version="1.0.0">
+  <description>converter</description>
+  <command>/home/jens/bin/bigwig2wig_stdout -f $input -b $bin_size -l $mylab > $output 
+  </command>
+  <requirements>
+    <requirement type="package">bigWigSummary</requirement>
+    <requirement type="package">bigwig2wig</requirement>
+    <requirement type="package">bigWigInfo</requirement>
+  </requirements>
+  <inputs>
+    <param format="bigwig" name="input" type="data" label="BigWig file to convert">
+    </param>
+    <param name="bin_size" size="4" type="integer" value="500" label="Bin size" help="Must be an even integer > 100." />
+    <param name="mylab" type="text" value="wiggle_file" label="Output file prefix" help="" />
+  </inputs>
+  <outputs>
+    <data format="wig" name="output" label="${mylab}_density_bin${bin_size}.wig" />
+  </outputs>
+  <tests>
+  </tests>
+  <help>
+
+This tool converts a **BigWig** file to fixed step **Wiggle** format. 
+Resolution is controlled through the bin size (the higher the size, the lower the resolution).
+
+The script this tool is based on is written by Jens Vilstrup Johansen and uses bigWigInfo_ and bigWigSummary_.
+
+.. _bigWigInfo: https://github.com/adamlabadorf/ucsc_tools/blob/master/executables/bigWigInfo
+.. _bigWigSummary: https://github.com/adamlabadorf/ucsc_tools/blob/master/executables/bigWigSummary
+
+</help>
+</tool>
