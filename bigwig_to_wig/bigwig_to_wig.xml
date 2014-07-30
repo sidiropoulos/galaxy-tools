@@ -1,6 +1,6 @@
 <tool id="bigwig_to_wig" name="BigWig to Wig" version="1.0.0">
   <description>converter</description>
-  <command>/home/jens/bin/bigwig2wig_stdout -f $input -b $bin_size -l $mylab > $output 
+  <command>bigwig2wig_stdout -f $input -b $bin_size -l $mylab > $output 
   </command>
   <requirements>
     <requirement type="package">bigWigSummary</requirement>
