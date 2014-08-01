@@ -1,21 +1,24 @@
 <tool id="bigwig_to_wig" name="BigWig to Wig" version="1.0.0">
-  <description>converter</description>
-  <command>bigwig_to_wig.sh -f $input -b $bin_size -l $mylab > $output 
-  </command>
+    <description>converter</description>
+    <command>bigwig_to_wig.sh -f $input -b $bin_size -l $mylab > $output </command>
   <requirements>
-    <requirement type="package">bigWigSummary</requirement>
-    <requirement type="package">bigWigInfo</requirement>
+      <requirement type="package">bigWigSummary</requirement>
+      <requirement type="package">bigWigInfo</requirement>
   </requirements>
   <inputs>
-    <param format="bigwig" name="input" type="data" label="BigWig file to convert">
-    </param>
-    <param name="bin_size" size="4" type="integer" value="500" label="Bin size" help="Must be an even integer > 100." />
-    <param name="mylab" type="text" value="wiggle_file" label="Output file prefix" help="" />
+      <param format="bigwig" name="input" type="data" label="BigWig file to convert" />
+      <param name="bin_size" size="4" type="integer" value="500" label="Bin size" help="Must be an even integer > 100." />
+      <param name="mylab" type="text" value="wiggle_file" label="Output file prefix" help="" />
   </inputs>
   <outputs>
-    <data format="wig" name="output" label="${mylab}_density_bin${bin_size}.wig" />
+      <data format="wig" name="output" label="${mylab}_density_bin${bin_size}.wig" />
   </outputs>
   <tests>
+      <test>
+	  <param name="input" value="1.bigwig" />
+	  <param name="bin_size" value="500" />
+	  <output name="output" file="1.wig" />	  
+      <test>
   </tests>
   <help>
 
