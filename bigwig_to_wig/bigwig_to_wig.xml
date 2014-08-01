@@ -4,7 +4,6 @@
   </command>
   <requirements>
     <requirement type="package">bigWigSummary</requirement>
-    <requirement type="package">bigwig2wig</requirement>
     <requirement type="package">bigWigInfo</requirement>
   </requirements>
   <inputs>
