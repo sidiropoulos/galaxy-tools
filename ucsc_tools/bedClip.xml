@@ -47,9 +47,9 @@
     
     <tests>
         <test>
-            <param name="input" value="2.bed" />
-            <param name="genome" value="hg18" />
-            <output name="output" file="3.bed" />
+            <param name="input" value="3.bed" />
+            <param name="genome" value="hg19" />
+            <output name="output" file="1.bed" />
         </test>
     </tests>
 

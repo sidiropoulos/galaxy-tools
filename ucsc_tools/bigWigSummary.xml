@@ -1,33 +1,43 @@
 <tool id="bigWigSummary" name="bigWigSummary">
-  <description> Extract summary information from a bigWig file. </description>
-  <command> 
+    <description> Extract summary information from a bigWig file. </description>
+    <command> 
 	bigWigSummary $input $chrom $start $end $dataPoints -type=$type> $output
-  </command>
-  <inputs>
-    <param name="input" type="data" format="bigwig" label="Input"/>
-    <param name="chrom" type="text" value="chr" label="Chromosome" help="E.g. 'chr7'"/>
-    <param name="start" type="integer" value="" label="Start coordinate" help="BED format (0-based)."/>
-    <param name="end" type="integer" value="" label="End coordinate" help="BED format (0-based)."/>    
-      
-    <param name="dataPoints" type="integer" value="1" label="Number of (equal) parts to break down the selected region."  help="Choose 1 for simple summary."/>
-    <param name="type" type="select" label="Operation">
-	<option value="mean">Average value in region (default)</option>
-        <option value="min">Minimum value in region</option>
-        <option value="max">Maximum value in region</option>
-        <option value="std">Standard deviation in region</option>
-        <option value="coverage">Percentage of region that is covered</option>
-    </param>
-  </inputs>
+    </command>
+    <inputs>
+        <param name="input" type="data" format="bigwig" label="Input"/>
+        <param name="chrom" type="text" value="chr" label="Chromosome" help="E.g. 'chr7'"/>
+        <param name="start" type="integer" value="" label="Start coordinate" help="BED format (0-based)."/>
+        <param name="end" type="integer" value="" label="End coordinate" help="BED format (0-based)."/>    
+        <param name="dataPoints" type="integer" value="1" label="Number of (equal) parts to break down the selected region."  help="Choose 1 for simple summary."/>
+        <param name="type" type="select" label="Operation">
+	    <option value="mean">Average value in region (default)</option>
+            <option value="min">Minimum value in region</option>
+            <option value="max">Maximum value in region</option>
+            <option value="std">Standard deviation in region</option>
+            <option value="coverage">Percentage of region that is covered</option>
+        </param>
+    </inputs>
   
-  <outputs>
-    <data format="text" name="output"/> 
-  </outputs>
-  <help>
+    <outputs>
+        <data format="text" name="output"/> 
+    </outputs>
+
+    <tests>
+	<test>
+	    <param name="input" value="1.bigwig" />
+	    <param name="chrom" value="chr21" />
+	    <param name="start" value="10000000" />
+            <param name="end" value="50000000" />
+	    <param name="dataPoints" value="3" />
+	    <param name="type" value="std" />
+	    <output name="output" value="1.txt" />
+	</test>
+    <tests>
+    <help>
 
 **Usage**
   * bigWigSummary file.bigWig chrom start end dataPoints
   * Get summary data from bigWig for indicated region, broken into dataPoints equal parts.  (Use dataPoints=1 for simple summary.)
 
-  </help>
+    </help>
 </tool>
-

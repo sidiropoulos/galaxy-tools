@@ -1,6 +1,9 @@
 <tool id="bedExtendRanges" name="bedExtendRanges">
-  <description> Extend length of entries in bed 6+. </description>
-  <command> 
+    <description> Extend length of entries in bed 6+. </description>
+    <requirements>
+        <requirement type="package" version="1.0">bedExtendRanges</requirement>
+    </requirements>
+    <command> 
 	## Set genome assembly 
 
 	#set $Genome = str( $genome_cond.genome )
@@ -9,44 +12,56 @@
 	#end if
 	
 	bedExtendRanges -user=genome -host=genome-mysql.cse.ucsc.edu $Genome $length $input 2> /dev/null > $output
-  </command>
-  <inputs>
-    <param name="input" type="data" format="bed" label="Input"/>
-    <conditional name="genome_cond">
-      <param name="genome" type="select" label="Genome Assembly (-g)">
-        <option value="hg19">Human (Homo sapiens): hg19</option>
-        <option value="hg18">Human (Homo sapiens): hg18</option>
-        <option value="mm10">Mouse (Mus musculus): mm10</option>
-        <option value="mm9">Mouse (Mus musculus): mm9</option>
-        <option value="ce10">C. elegans: ce10</option>
-        <option value="ce6">C. elegans: ce6</option>
-        <option value="dm3">D. melanogaster: dm3</option>
-        <option value="OTHER">Other</option>
-      </param>
-      <when value="OTHER">
-        <param name="genome_other" type="text" label="Other genome assemly"/>
-      </when>
-      <when value="hg19" type="text" />
-      <when value="hg18" type="text" />
-      <when value="mm10" type="text" />
-      <when value="mm9" type="text" />
-      <when value="ce10" type="text" />
-      <when value="ce6" type="text" />
-      <when value="dm3" type="text" />
-    </conditional>
-    <param name="length" type="integer" value="0" label="Length extension (base-pairs)" />
+    </command>
+    <inputs>
+        <param name="input" type="data" format="bed" label="Input"/>
+        <conditional name="genome_cond">
+            <param name="genome" type="select" label="Genome Assembly (-g)">
+	        <option value="hg19">Human (Homo sapiens): hg19</option>
+        	<option value="hg18">Human (Homo sapiens): hg18</option>
+	        <option value="mm10">Mouse (Mus musculus): mm10</option>
+        	<option value="mm9">Mouse (Mus musculus): mm9</option>
+        	<option value="ce10">C. elegans: ce10</option>
+	        <option value="ce6">C. elegans: ce6</option>
+	        <option value="dm3">D. melanogaster: dm3</option>
+        	<option value="OTHER">Other</option>
+            </param>
+            <when value="OTHER">
+      		<param name="genome_other" type="text" label="Other genome assemly"/>
+            </when>
+      	    <when value="hg19" type="text" />
+            <when value="hg18" type="text" />
+      	    <when value="mm10" type="text" />
+            <when value="mm9" type="text" />
+            <when value="ce10" type="text" />
+            <when value="ce6" type="text" />
+            <when value="dm3" type="text" />
+    	</conditional>
+        <param name="length" type="integer" value="0" label="Length extension (base-pairs)" />
 
-  </inputs>
+    </inputs>
   
-  <outputs>
-    <data format="input" name="output"/> 
-  </outputs>
-  <help>
+    <outputs>
+        <data format="input" name="output"/> 
+    </outputs>
+
+    <tests>
+	<test>
+	    <param name="input" value="2.bed" />
+	    <param name="genome" value="hg19" />
+	    <param name="length" value="5000" />
+	    <output name="output" file="4.bed" />
+	</test>
+    </tests>
+
+    <help>
 
 **What it does**
 
-bedExtendRanges - extend length of entries in bed 6+ data to be at least the given length,
+bedExtendRanges_ - extend length of entries in bed 6+ data to be at least the given length,
 taking strand directionality into account.
+
+.. _bedExtendRanges: http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/bedExtendRanges
 
 **Usage**
 
@@ -63,6 +78,5 @@ taking strand directionality into account.
     chr1 500 750 . 100 +
     chr1 775 1025 . 100 -
 
-  </help>
+    </help>
 </tool>
-

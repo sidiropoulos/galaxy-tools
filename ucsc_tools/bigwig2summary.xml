@@ -32,12 +32,19 @@
 	    <param name="input_bw" value="1.bigwig" />
 	    <param name="input_bed" value="1.bed" />
 	    <param name="bins" value="3" />
-	    <param name="assembly" value="hg18" />
+	    <param name="assembly" value="hg19" />
 	    <output name="output" file="1.tabular" />
+        </test>
+        <test>
+            <param name="input_bw" value="1.bigwig" />
+            <param name="input_bed" value="2.bed" />
+            <param name="bins" value="5" />
+            <param name="assembly" value="hg19" />
+            <output name="output" file="2.tabular" />
         </test>
     </tests>
 
-  <help>
+    <help>
 
 This tool extracts summary values (mean, min, max, std or coverage) from a **bigWig** file for a number of equal sized bins across genomic regions given in an a "BED-like" file.
 
@@ -93,6 +100,5 @@ Extract summary (*#* of bins = 3)::
   0.221471	0.144886	0.309857
   0.244495	0.426638	0.348944
 
-  </help>
+    </help>
 </tool>
-
