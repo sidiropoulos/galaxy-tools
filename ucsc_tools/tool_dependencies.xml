@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<tool_dependency>
+    <package name="bigWigSummary" version="1.0">
+        <install version="1.0">
+            <actions>
+                <action type="download_by_url">http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/bigWigSummary</action>
+	        <action type="move_directory_files">
+        	    <source_directory>.</source_directory>
+        	    <destination_directory>$INSTALL_DIR</destination_directory>
+        	</action>
+                <action type="chmod"><file mode="755">$INSTALL_DIR/bigWigSummary</file></action>
+		<action type="set_environment">
+                    <environment_variable name="PATH" action="prepend_to">$INSTALL_DIR</environment_variable>
+                </action>
+	    </actions>
+        </install>
+        <readme>
+        </readme>
+    </package>
+    <package name="bedClip" version="1.0">
+        <install version="1.0">
+            <actions>
+                <action type="download_by_url">http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/bedClip</action>
+                <action type="move_directory_files">
+                    <source_directory>.</source_directory>
+                    <destination_directory>$INSTALL_DIR</destination_directory>
+                </action>
+                <action type="chmod"><file mode="755">$INSTALL_DIR/bedClip</file></action>
+                <action type="set_environment">
+                    <environment_variable name="PATH" action="prepend_to">$INSTALL_DIR</environment_variable>
+                </action>
+            </actions>
+        </install>
+        <readme>
+        </readme>
+    </package>
+    <package name="bedExtendRanges" version="1.0">
+        <install version="1.0">
+            <actions>
+                <action type="download_by_url">http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/bedExtendRanges</action>
+                <action type="move_directory_files">
+                    <source_directory>.</source_directory>
+                    <destination_directory>$INSTALL_DIR</destination_directory>
+                </action>
+                <action type="chmod"><file mode="755">$INSTALL_DIR/bedExtendRanges</file></action>
+                <action type="set_environment">
+                    <environment_variable name="PATH" action="prepend_to">$INSTALL_DIR</environment_variable>
+                </action>
+            </actions>
+        </install>
+        <readme>
+        </readme>
+    </package>
+    <package name="fetchChromSizes" version="1.0">
+        <install version="1.0">
+            <actions>
+                <action type="download_by_url">http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/fetchChromSizes</action>
+                <action type="move_directory_files">
+                    <source_directory>.</source_directory>
+                    <destination_directory>$INSTALL_DIR</destination_directory>
+                </action>
+		<action type="chmod"><file mode="755">$INSTALL_DIR/fetchChromSizes</file></action>
+                <action type="set_environment">
+                    <environment_variable name="PATH" action="prepend_to">$INSTALL_DIR</environment_variable>
+                </action>
+            </actions>
+        </install>
+        <readme>
+        </readme>
+    </package>
+</tool_dependency>

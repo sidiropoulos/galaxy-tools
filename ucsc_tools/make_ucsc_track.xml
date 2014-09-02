@@ -1,0 +1,50 @@
+<tool id="make_ucsc_track" name="UCSC Track Line">
+    <description> Create a track line to import a bigWig or bigBed file in the UCSC genome browser </description>
+    <command interpreter="bash"> 
+	make_ucsc_track.sh -i $input -t ${input.ext} -n '$name' -o $assembly > $output
+    </command>
+    <inputs>
+        <param name="input" type="data" format="bigwig,bigbed" label="Input file" help="bigWig or bigBed format." />
+        <param name="name" type="text" label="Track name" help="Type the track name you want to appear when you import the file in the UCSC browser." >
+            <validator type="empty_field" />
+        </param>
+
+        <param name="assembly" type="text" label="Orgamism assembly" help="E.g. hg19" >
+	    <validator type="empty_field" />
+        </param>
+
+<!--    
+	<param name="visibility" type="select" label="Track visibility">
+	    <option value="3">Full</option>
+            <option value="2">Pack</option>
+            <option value="1">Dense</option>
+        </param>
+-->
+    </inputs>
+  
+    <outputs>
+        <data format="txt" name="output"/> 
+    </outputs>
+
+    <tests>
+	<test>
+	    <param name="input" value="1.bigwig" />
+	    <param name="name" value="bigWig_test" />
+	    <param name="assembly" value="hg18" />
+	    <output name="output" file="bigwig_track.txt" />
+	</test>
+	<test>
+	    <param name="input" value="1.bigbed" />
+	    <param name="name" value="bigBed_test" />
+	    <param name="assembly" value="hg19" />
+	    <output name="output" file="bigbed_track.txt" />
+    </tests>
+
+    <help>
+This tool creates a UCSC track line for a bigWig or bigBed dataset in Galaxy. The text output can be pasted in the "Paste URLs or data" form in the `Add Custom Tracks`_ section of the UCSC Genome Browser.
+
+.. _Add Custom Tracks: http://genome.ucsc.edu/cgi-bin/hgCustom 
+
+  </help>
+</tool>
+

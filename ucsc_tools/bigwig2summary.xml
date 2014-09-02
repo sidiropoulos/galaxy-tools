@@ -1,0 +1,98 @@
+<tool id="bigwig2_summary" name="bigWig2Summary">
+    <description> Extract summary information from a bigWig file across multiple genomic regions specified by the user. </description>
+    <requirements>
+        <requirement type="package" version="1.0">bigWigSummary</requirement>
+        <requirement type="package" version="1.0">fetchChromSizes</requirement>
+        <requirement type="package" version="1.0">bedClip</requirement>
+    </requirements>
+    <command interpreter="bash"> 
+	bigwig2summary.sh -f $input_bw -b $input_bed -n $bins -o $assembly -t $type $header > $output
+    </command>
+    <inputs>
+        <param name="input_bw" type="data" format="bigwig" label="Extract summary from" help="bigWig format."/>
+        <param name="input_bed" type="data" format="tabular" label="using genomic regions in" help="TAB delimited BED-like file."/>
+        <param name="bins" type="integer" value="1" label="Number of bins" help="Postitive integer"/>
+        <param name="assembly" type="text" label="Orgamism assembly" help="E.g. hg19" />
+        <param name="header" type="boolean" checked="False" truevalue="-e" falsevalue=" " label="Does the genomic region file contain a header?" />    
+        <param name="type" type="select" label="Operation" help="">
+	    <option value="mean">Average value in region (default)</option>
+            <option value="min">Minimum value in region</option>
+            <option value="max">Maximum value in region</option>
+            <option value="std">Standard deviation in region</option>
+            <option value="coverage">Percentage of region that is covered</option>
+        </param>
+    </inputs>
+  
+    <outputs>
+        <data format="tabular" name="output"/> 
+    </outputs>
+
+    <tests>
+        <test>
+	    <param name="input_bw" value="1.bigwig" />
+	    <param name="input_bed" value="1.bed" />
+	    <param name="bins" value="3" />
+	    <param name="assembly" value="hg18" />
+	    <output name="output" file="1.tabular" />
+        </test>
+    </tests>
+
+  <help>
+
+This tool extracts summary values (mean, min, max, std or coverage) from a **bigWig** file for a number of equal sized bins across genomic regions given in an a "BED-like" file.
+
+The script this tool is based on is written by Jens Vilstrup Johansen and uses bigWigSummary_, bedClip_ and fetchChromSizes_.
+
+.. _bigWigSummary: http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/bigWigSummary 
+
+.. _bedClip: http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/bedClip
+
+-- _fetchChromSizes: http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/fetchChromSizes
+
+-----
+
+.. class:: infomark
+
+The file contaning the genomic region must be TAB-delimited with at list 3 columns representing Chromosome, ChrStart and ChrEnd. If the file contains 6 columns (or more), column 6 is expected to contain strand information. Summary values from a negative strand will be reversed.
+ 
+-----
+
+**Example 1**
+
+Input BED file::
+
+  chr19   50178708        50180708
+  chr6    90348174        90350174
+  chr16   58495848        58497848
+  chr5    180580242       180582242
+  chr9    120177017       120179017  
+
+Extract summary (*#* of bins = 3):: 
+
+  0		0		0
+  0.144886	0		0
+  0.507327	1.14649		1.38456
+  0.221471	0.144886	0.309857
+  0.348944	0.426638	0.244495
+
+**Example 2**
+
+Input BED file (with strand information)::
+
+  chr19	  50178708	50180708	NM_198318	0	+	PRMT1
+  chr6	  90348174	90350174	NM_020466	0	-	LYRM2
+  chr16	  58495848	58497848	NM_020465	0	+	NDRG4
+  chr5 	  180580242	180582242	NM_206880	0	+	OR2V2
+  chr9    120177017     120179017       NM_014010       0       -	ASTN2
+
+Extract summary (*#* of bins = 3)::
+
+  0		0		0
+  0		0		0.144886
+  0.507327	1.14649		1.38456
+  0.221471	0.144886	0.309857
+  0.244495	0.426638	0.348944
+
+  </help>
+</tool>
+

@@ -1,0 +1,66 @@
+<tool id="bedClip" name="bedClip">
+    <description> Remove lines from bed file that refer to off-chromosome places.</description>
+    <requirements>
+        <requirement type="package" version="1.0">fetchChromSizes</requirement>
+        <requirement type="package" version="1.0">bedClip</requirement>
+    </requirements>
+    <command interpreter="bash"> 
+	## Set genome assembly 
+
+	#set $Genome = str( $genome_cond.genome )
+	#if str( $genome_cond ) == 'OTHER':
+		#set $Genome = str( $genome_cond.genome_other )
+	#end if
+	
+	bedClip.sh $input $Genome $output
+    </command>
+    <inputs>
+        <param name="input" type="data" format="bed" label="Input"/>
+        <conditional name="genome_cond">
+	    <param name="genome" type="select" label="Genome Assembly">
+        	<option value="hg19">Human (Homo sapiens): hg19</option>
+	        <option value="hg18">Human (Homo sapiens): hg18</option>
+        	<option value="mm10">Mouse (Mus musculus): mm10</option>
+	        <option value="mm9">Mouse (Mus musculus): mm9</option>
+        	<option value="ce10">C. elegans: ce10</option>
+	        <option value="ce6">C. elegans: ce6</option>
+        	<option value="dm3">D. melanogaster: dm3</option>
+	        <option value="OTHER">Other</option>
+            </param>
+	    <when value="OTHER">
+        	<param name="genome_other" type="text" label="Other genome assemly"/>
+      	    </when>
+	    <when value="hg19" type="text" />
+      	    <when value="hg18" type="text" />
+      	    <when value="mm10" type="text" />
+      	    <when value="mm9" type="text" />
+	    <when value="ce10" type="text" />
+	    <when value="ce6" type="text" />
+	    <when value="dm3" type="text" />
+	</conditional>
+
+    </inputs>
+  
+    <outputs>
+        <data format="input" name="output"/> 
+    </outputs>
+    
+    <tests>
+        <test>
+            <param name="input" value="2.bed" />
+            <param name="genome" value="hg18" />
+            <output name="output" file="3.bed" />
+        </test>
+    </tests>
+
+    <help>
+**What it does**
+bedClip - Remove lines from bed file that refer to off-chromosome places.
+
+**Usage**
+
+  bedClip input.bed chrom.sizes output.bed
+
+    </help>
+</tool>
+
