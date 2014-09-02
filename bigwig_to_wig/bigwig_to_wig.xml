@@ -1,9 +1,9 @@
-<tool id="bigwig_to_wig" name="BigWig to Wig" version="1.0.0">
+<tool id="bigwig_to_wig" name="BigWig to Wig" version="1.0.2">
     <description>converter</description>
-    <command>bigwig_to_wig.sh -f $input -b $bin_size -l $mylab > $output </command>
+    <command interpreter="bash">bigwig_to_wig.sh -f $input -b $bin_size -l $mylab > $output </command>
   <requirements>
-      <requirement type="package">bigWigSummary</requirement>
-      <requirement type="package">bigWigInfo</requirement>
+      <requirement type="package" version="1.0">bigWigSummary</requirement>
+      <requirement type="package" version="1.0">bigWigInfo</requirement>
   </requirements>
   <inputs>
       <param format="bigwig" name="input" type="data" label="BigWig file to convert" />
@@ -18,7 +18,7 @@
 	  <param name="input" value="1.bigwig" />
 	  <param name="bin_size" value="500" />
 	  <output name="output" file="1.wig" />	  
-      <test>
+      </test>
   </tests>
   <help>
 
