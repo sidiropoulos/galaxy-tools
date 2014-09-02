@@ -32,7 +32,7 @@
 	    <param name="type" value="std" />
 	    <output name="output" value="1.txt" />
 	</test>
-    <tests>
+    </tests>
     <help>
 
 **Usage**
