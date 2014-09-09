@@ -21,14 +21,14 @@
     <tests>
 	<test>
 	    <param name="input" value="1.fasta" />
-	    <output name="output" file="2.tabular" />
+	    <output name="output" file="3.tabular" />
 	</test>
 	<test>
 	    <param name="input" value="1.fasta" />
 	    <param name="summary" value="true" />
 	    <param name="dinuc" value="true" />
 	    <param name="strands" value="true" />
-	    <output name="output" file="3.tabular" />
+	    <output name="output" file="4.tabular" />
     	</test>
     </tests>
 
