@@ -33,6 +33,7 @@
 	    <param name="input_bed" value="1.bed" />
 	    <param name="bins" value="3" />
 	    <param name="assembly" value="hg19" />
+	    <param name="header" value="true" />
 	    <output name="output" file="1.tabular" />
         </test>
         <test>
@@ -40,6 +41,7 @@
             <param name="input_bed" value="2.bed" />
             <param name="bins" value="5" />
             <param name="assembly" value="hg19" />
+            <param name="header" value="true" />
             <output name="output" file="2.tabular" />
         </test>
     </tests>

@@ -30,7 +30,7 @@
             <param name="end" value="50000000" />
 	    <param name="dataPoints" value="3" />
 	    <param name="type" value="std" />
-	    <output name="output" value="1.txt" />
+	    <output name="output" file="1.txt" />
 	</test>
     </tests>
     <help>
