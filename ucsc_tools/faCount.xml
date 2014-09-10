@@ -1,0 +1,78 @@
+<tool id="faCount" name="faCount">
+    <description> Count base statistics and CpGs in FASTA files.</description>
+    <requirements>
+        <requirement type="package" version="1.0">faCount</requirement>
+    </requirements>
+    <command>
+	faCount $summary $dinuc $strands $input > $output
+    </command>
+
+    <inputs>
+	<param name="input" type="data" format="fasta" label="FASTA file" />
+	<param name="summary" type="boolean" checked="false" falsevalue="" truevalue="-summary" label="Show only summary statistics" />
+	<param name="dinuc" type="boolean" checked="false" falsevalue="" truevalue="-dinuc" label="Include statistics on dinucletoide frequencies" />
+	<param name="strands" type="boolean" checked="false" falsevalue="" truevalue="-strands" label="Count bases on both strands" />
+    </inputs>
+
+    <outputs>
+	<data format="tabular" name="output" />
+    </outputs>
+
+    <tests>
+	<test>
+	    <param name="input" value="1.fasta" />
+	    <output name="output" file="3.tabular" />
+	</test>
+	<test>
+	    <param name="input" value="1.fasta" />
+	    <param name="summary" value="true" />
+	    <param name="dinuc" value="true" />
+	    <param name="strands" value="true" />
+	    <output name="output" file="4.tabular" />
+    	</test>
+    </tests>
+
+    <help>
+**What it does**
+
+faCount_ - Count base statistics and CpGs in FA files.
+
+.. _faCount: http://hgdownload.cse.ucsc.edu/admin/exe/linux.x86_64/faCount
+
+**Usage**
+  
+faCount file(s).fa -summary -dinuc -strands
+
+**Examples**
+
+Example 1::
+
+  faCount 1.fasta
+
+  #seq		len	A	C	G	T	N	cpg
+  HSFAU1	515	125	138	146	106	0	23
+  HSFAU2	514	124	138	146	106	0	25
+  HSFAU3	518	125	139	149	105	0	25
+  HSFAU4	524	128	142	148	106	0	26
+  HSFAU5	518	124	138	147	109	0	25
+  total		2589	626	695	736	532	0	124
+
+Example 2::
+
+  faCount 1.fasta -summary
+
+  #seq		len	A	C	G	T	N	cpg
+  total		2589	626	695	736	532	0	124
+  prcnt		1.0  	0.2418	0.2684	0.2843	0.2055	0.0000	0.0479
+
+Example 3::
+
+  faCount 1.fasta -summary -strands
+  
+  #seq		len	A	C	G	T	N	cpg
+  total		5178	1158	1431	1431	1158	0	248
+  prcnt		1.0  	0.2236	0.2764	0.2764	0.2236	0.0000	0.0479
+
+    </help>
+
+</tool>
