@@ -1,0 +1,1 @@
+No trimming:	534	, out of which not recognized MD field for:	0	; 1 nt trimmed:	90	; 2 nt trimmed:	14	; 3 nt trimmed:	9

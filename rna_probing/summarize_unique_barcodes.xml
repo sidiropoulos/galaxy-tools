@@ -1,0 +1,135 @@
+<tool id="rnastr_summarize" version="0.1" name="Summarize Unique Barcodes" force_history_refresh="True">
+    <description></description>
+    <requirements>
+	<requirement type="set_environment">R_SCRIPT_PATH</requirement>
+        <requirement type="package" version="2.15.0">R</requirement>
+	<requirement type="package" version="0.1.18">samtools</requirement>
+    </requirements>
+    <command interpreter="bash">
+	summarize_unique_barcodes.sh
+
+	## Inputs
+	-f $input1 -b $input2
+
+	##
+
+    #if str( $k2n ) == 'True':
+        -k
+    #end if
+
+	#if str( $priming.flag ) == 'True':
+		-p $priming.position
+	#end if
+
+    #if str( $trimming ) == 'True':
+        -t
+    #end if
+
+	-r "/galaxy-internal/galaxy/galaxy-dist/tools/rna_probing"
+
+    </command>
+
+    <!-- basic error handling -->
+    <stdio>
+        <regex match="Error" level="fatal" description="" />
+    </stdio>
+
+    <inputs>
+        <param format="bam" name="input1" type="data" label="Aligned Reads" help="BAM format." />
+        <param format="tabular" name="input2" type="data" optional="True" label="Barcodes" help="Produced by Debarcoding tool." />
+        <param name="k2n" type="boolean" checked="False" truevalue="True" falsevalue="False" label="Produce k2n file" help="Check the box if you ran the tool and received a warning message to produce the k2n file. Necessary if you want to use 'HRF-Seq' method in 'Normalize' tool. Warning: Can be very slow!" />
+        <param name="trimming" type="boolean" checked="True" truevalue="True" falsevalue="False" label="Trim untemplated nucleotides" help="" />
+        <conditional name="priming">
+            <param name="flag" type="select" label="Set priming position" help="Set the priming position manually.">
+                <option value="False">No</option>
+                <option value="True">Yes</option>
+            </param>
+            <when value="True">
+                <param name="position" type="integer" value="0" min="0" label="Priming position" />
+            </when>
+            <when value="False" />
+        </conditional>
+    </inputs>
+
+    <outputs>
+        <data format="tabular" name="trimming_stats" label="${tool.name} on ${on_string}: Trimming stats" from_work_dir="output_dir/trimming_stats.txt">
+            <filter>trimming is True</filter>
+        </data>
+        <data format="tabular" name="unique_barcodes" label="${tool.name} on ${on_string}: Unique Barcodes" from_work_dir="output_dir/unique_barcodes.txt">
+            <filter> input2 != None </filter>
+        </data>
+        <data format="tabular" name="read_counts" label="${tool.name} on ${on_string}: Read Counts" from_work_dir="output_dir/read_counts.txt" />
+        <data format="txt" name="k2n_file" label="${tool.name} on ${on_string}: k2n file" from_work_dir="output_dir/k2n.txt">
+            <filter> k2n is True </filter>
+        </data>
+    </outputs>
+
+    <tests>
+        <test>
+            <param name="input1" value="sample.bam" />
+            <param name="input2" value="barcodes.txt" />
+            <param name="k2n" value="True" />
+            <param name="trimming" value="True" />
+            <output name="trimming_stats" file="trimming_stats.txt" />
+            <output name="unique_barcodes" file="unique_barcodes.txt" />
+            <output name="read_counts" file="read_counts.txt" />
+        </test>
+    </tests>
+
+    <help>
+**What it does**
+
+*Summarize Unique Barcodes* counts the number of unique random barcodes and reads associated with each sequenced fragment. A fragment is understood as 1) a pair of Reverse Transcriptase (RT) termination site and RT priming site given paired end sequencing, or 2) an RT termination site in a single end sequencing. For non-barcoded sequencing it only counts the reads matching each fragment.
+
+------
+
+**Inputs**
+
+*Summarize Unique Barcodes* requires a file containing the Aligned Reads (required) in BAM_ format and tabular file with the Barcodes (optional) produced by the *Preprocessing* tool of the *RNA probing* suite.
+
+.. _BAM: http://samtools.github.io/hts-specs/SAMv1.pdf
+
+-------
+
+**Parameters**
+
+**Produce k2n file** - A file that contains a sequence of numbers where the n-th element informs how many unique cDNA molecules gives rise to observing n unique barcodes in a given sample. Required for calculating Estimated Unique Counts (EUCs) in tool *Normalize*.
+
+**Trim untemplated nucleotides** - Untemplated nucleotides can be added to cDNA 3’ ends via terminal transferase activity of reverse transcriptase which offset the location of the read-end mapping and lead to erroneous assignment of reactivity information to nucleotides upstream of those which has reacted (Schmidt and Mueller, 1999, Talkish et al., 2014). Setting this parameter on will remove those nucleotides.
+
+Recommended for methods based on detecting reverse transcription termination sites (e.g. DMS-Seq, HRF-Seq or SHAPE-Seq), and not for methods based on ligating the linker directly to RNA (e.g. PARS or FragSeq).
+
+**Set priming position** - Applicable when the priming site is fixed.
+
+------
+
+**Outputs**
+
+**Unique Barcodes** (if a Barcode file is given) is a tabular file with 4 columns.
+
+====== ==========================================================
+Column Description
+------ ----------------------------------------------------------
+     1 Transcript identifier
+     2 RT termination site (start)
+     3 RT priming site (end)
+     4 Count of unique barcodes associated with fragments matching the first three columns
+====== ==========================================================
+
+.
+
+**Read Counts** is similar to Unique Barcodes but the fourth column is a count of reads matching first three columns.
+
+**k2n file** as described above.
+
+**Trimming Stats** reports statistics of trimming untemplated nucleotides from read ends.
+
+    </help>
+
+    <citations>
+        <citation type="doi">10.1093/nar/gku167</citation>
+        <citation type="doi">10.1093/nar/27.21.e31-i</citation>
+        <citation type="doi">10.1261/rna.042218.113</citation>
+    </citations>
+
+</tool>

@@ -1,0 +1,43 @@
+<tool id="rnastr_plot" version="0.1" name="RNA Plot" force_history_refresh="True">
+
+    <description></description>
+    <requirements />
+
+    <command>/home/nikos/software/R-3.1.1/bin/Rscript ~/galaxy-dist/tools/rna_probing/plot_rna.R -i $input -t "$transcript" -m $norm_method -c $cutoff -p $plot_type -o $plot > /dev/null </command>
+
+    <inputs>
+        <param name="input" type="data" format="tabular" label="Input dataset" help="'Normalize' tool tabular output." />
+
+        <param name="transcript" type="text" size="20" label="Transcript identifier" help="Select the transcript that the plot should be generated for.">
+            <validator type="empty_field"/>
+        </param>
+        <param name="norm_method" type="select" display="checkboxes" multiple="true" label="Normalization method" help="Column values to be ploted (One plot per selected method).">
+            <option value="dtcr">deltaTCR</option>
+            <option value="slograt">Smooth Log2 Ratio</option>
+            <option value="swinsor">Sliding window Winsorization</option>
+            <option value="TC.treated">Termination Count (Treated)</option>
+            <option value="Cover.treated">Coverage (Treated)</option>
+            <option value="TCR.treated">TCR (Treated)</option>
+            <option value="TC.control">Termination Count (Control)</option>
+            <option value="Cover.control">Coverage (Control)</option>
+            <option value="TCR.control">TCR (Control)</option>
+        </param>
+        <param name="cutoff" type="float" max="1.0" value="0.05" label="Significance level" help="Reports p-values or standard deviation (red asterisks) below the significance level. Set a negative value to print none." />
+        <param name="plot_type" type="select" label="Plot type">
+            <option value="l">Lines</option>
+            <option value="h">Histogram</option>
+        </param>
+    </inputs>
+
+    <outputs>
+        <data name="plot" format="pdf" label="${tool.name} on ${on_string}: ${transcript} plot" />
+    </outputs>
+
+    <tests>
+        <test>
+        </test>
+    </tests>
+
+    <help>
+    </help>
+</tool>

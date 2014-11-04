@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<tool_dependency>
+    <package name="samtools" version="0.1.18">
+        <repository changeset_revision="c0f72bdba484" name="package_samtools_0_1_18" owner="devteam" prior_installation_required="False"/>
+    </package>
+    <package name="R_3_1_1" version="3.1.1">
+        <repository changeset_revision="d9964efbfbe3" name="package_r_3_1_1" owner="foobar" prior_installation_required="True"/>
+    </package>
+    <package name="rnaprobr" version="1.0.0">
+        <install version="1.0">
+            <actions>
+                <action type="setup_r_environment">
+                    <repository name="package_r_3_1_1" ownner="foobar"/>
+                        <package name="R_3_1_1" version="3.1.1">
+                    </repository>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/Rcpp_0.11.3.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/plyr_1.8.1.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/BiocGenerics_0.12.0.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/Biobase_2.26.0.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/S4Vectors_0.4.0.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/IRanges_2.0.0.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/GenomeInfoDb_1.2.2.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/XVector_0.6.0.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/GenomicRanges_1.18.1.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/DBI_0.3.1.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/RSQLite_1.0.0.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/AnnotationDbi_1.28.1.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/zlibbioc_1.12.0.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/Biostrings_2.34.0.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/XML_3.98-1.1.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/bitops_1.0-6.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/RCurl_1.95-4.3.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/Rsamtools_1.18.1.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/iterators_1.0.7.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/foreach_1.4.2.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/brew_1.0-6.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/checkmate_1.5.0.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/digest_0.6.4.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/BBmisc_1.8.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/fail_1.2.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/stringr_0.6.2.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/base64enc_0.1-2.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/sendmailR_1.2-1.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/BatchJobs_1.5.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/BiocParallel_1.0.0.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/GenomicAlignments_1.2.0.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/rtracklayer_1.26.1.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/biomaRt_2.22.0.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/GenomicFeatures_1.18.2.tar.gz</package>
+                    <package>https://bitbucket.org/nikos_sidiropoulos/source_packages/RNAprobing-1.0.0/RNAprobR_0.99.0.tar.gz</package>
+                </action>
+            </actions>
+        </install>
+    </package>
+    RNA probing data Analysis suite
+    Link to chapter here..
+</tool_dependency>
