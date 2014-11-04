@@ -7,7 +7,7 @@
         <repository changeset_revision="632f1a03db92" name="package_samtools_0_1_19" owner="iuc"/>
     </package>
     <package name="R_3_1_1" version="3.1.1">
-        <repository changeset_revision="d9964efbfbe3" name="package_r_3_1_1" owner="foobar"/>
+        <repository changeset_revision="d9964efbfbe3" name="package_r_3_1_1" owner="fubar"/>
     </package>
     <package name="RNAprobR" version="1.0.0">
         <repository changeset_revision="cabd73083325" name="package_rna_probing_0_99_0" owner="nikos"/>
