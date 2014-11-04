@@ -1,0 +1,228 @@
+<tool id="rnastr_normalization" version="0.1" name="Normalize" force_history_refresh="True">
+    <description>RNA probing data </description>
+    <requirements>
+	<requirement type="package" version="3.1.0">R</requirement>
+	<requirement type="package" version="1.0.0">RNAstr</requirement>
+    </requirements>
+
+    <command>
+        /home/nikos/software/R-3.1.1/bin/Rscript /galaxy-internal/galaxy/galaxy-dist/tools/rna_probing/normalize.R
+
+        -t $treated
+        -c $control
+
+        --method $euc_method.euc
+
+        #if str($euc_method.euc) == "Fu":
+            --fuComplexity $euc_method.complexity
+        #else if str($euc_method.euc) == "HRF-Seq":
+            --k2nTreated $euc_method.k2n_treated
+            --k2nControl $euc_method.k2n_control
+        #end if
+
+        --reference $fasta
+
+        #if str($compdata) == 'yes':
+            --compdata
+        #end if
+
+        #if str($dtcr.check) == 'yes':
+            --dtcr
+            --dtcrWindow $dtcr.wsize
+            --dtcrToZero $dtcr.zero
+        #end if
+
+        #if str($slograt.check) == 'yes':
+            --slograt
+            --slogratWindow $slograt.wsize
+            --depthCorrection $slograt.depth_cor
+		    --pseudocount $slograt.pseudocount
+        #end if
+
+        #if str($swinsor.check) == 'yes':
+            --swinsor
+            --swinsorWindow $swinsor.wsize
+	        --winsorLevel $swinsor.winsor_level
+            --fixQuantile $swinsor.only_top
+        #end if
+
+        --ntOffset $nt_offset
+        --cutoff $cutoff
+
+        #if str($bedgraph.check) == 'yes':
+            --bedgraph
+            --bed "$bedgraph.bed_file"
+            --genome "$bedgraph.genome"
+            --trackName "$bedgraph.track_name"
+        #end if
+
+        -o 'output_dir' > /dev/null
+
+    </command>
+
+    <inputs>
+        <param name="treated" type="data" format="tabular" label="Unique Barcodes/Counts Treated File" help="'Summarize Unique Barcodes' tool output." />
+        <param name="control" type="data" format="tabular" optional="True" label="Unique Barcodes/Counts Control File" help="'Summarize Unique Barcodes' tool output." />
+        <conditional name="euc_method">
+            <param name="euc" type="select" label="EUC* method" help="*Estimated unique counts.">
+                <option value="counts" selected="True">Counts - Keep unique counts</option>
+                <option value="Fu">Fu - Fu GK et al. PNAS 2011 (Binomial Distribution) formula</option>
+                <option value="HRF-Seq">HRF-Seq - as described in Kieplinski and Vinther, NAR 2014</option>
+            </param>
+            <when value="counts" />
+            <when value="Fu">
+                <param name="complexity" type="integer" value="" min="1" label="Random barcode complexity (m)" help="Highest possible number of unique barcodes. e.g For 7 nucleotide, fully degenerate random barcodes (NNNNNNN) then m = 16384 (m=4^7)." />
+            </when>
+            <when value="HRF-Seq">
+                <param name="k2n_treated" type="data" format="text" label="k2n Treated File" help="'Summarize Unique Barcodes' output." />
+                <param name="k2n_control" type="data" format="text" label="k2n Control File" optional="True"  help="'Summarize Unique Barcodes' output." />
+            </when>
+        </conditional>
+        <param name="fasta" type="data" format="fasta" optional="True" label="Reference Fasta sequence" help="Used to report nucleotide at each position." />
+        <param name="compdata" type="boolean" label="Print raw values" checked="True" truevalue="yes" falsevalue="" help="Get Priming Count, Termination Count, Coverage and TCR values" />
+        <conditional name="dtcr">
+            <param name="check" type="select" label="deltaTCR Normalization" help="Requires Control dataset!">
+                <option value="no" selected="True">Do not apply</option>
+                <option value="yes">Apply</option>
+            </param>
+            <when value="no"/>
+            <when value="yes">
+                <param name="wsize" label="Window Size" type="integer" value="3" min="1" size="3" help="Integer. Use only odd numbers to ensure that windows are centred on a nucleotide of interest." />
+                <param name="zero" label="Bring to zero" type="boolean" checked="True" truevalue="TRUE" falsevalue="FALSE" help="Replace negative deltaTCR values with 0." />
+            </when>
+        </conditional>
+        <conditional name="slograt">
+            <param name="check" type="select" label="Smooth Log2 Ratio Normalization" help="Requires Control dataset!">
+                <option value="no" selected="True">Do not apply</option>
+                <option value="yes">Apply</option>
+            </param>
+            <when value="no"/>
+            <when value="yes">
+                <param name="wsize" label="Window Size" type="integer" value="5" min="1" size="3" help="Integer. Use only odd numbers to ensure that windows are centred on a nucleotide of interest." />
+                <param name="depth_cor" type="select" label="Depth Correction">
+                    <option value="no">No - counts are used as given</option>
+                    <option value="all" selected="True">All - treated counts are multiplied by sum of control counts and divided by sum of treated counts</option>
+                    <option value="RNA">RNA - as in "All" but per RNA basis</option>
+                </param>
+                <param name="pseudocount" type="integer" value="5" size="3" label="Pseudocount" help="Pseudocounts to be added to each nucleotide prior to calculating log2 ratio." />
+            </when>
+        </conditional>
+        <conditional name="swinsor">
+            <param name="check" type="select" label="Sliding window Winsorization" help="Doesn't require Control dataset.">
+                <option value="no" selected="True">Do not apply</option>
+                <option value="yes">Apply</option>
+            </param>
+            <when value="no"/>
+            <when value="yes">
+                <param name="wsize" label="Window Size" type="integer" value="71" min="1" size="3" help="Integer. Use only odd numbers to ensure that windows are centred on a nucleotide of interest." />
+                <param name="winsor_level" type="float" value="0.9" min="0.0" max="1.0" size="3" label="Winsor level" help="Indicates where should winsorization boundaries be made. Value 0.9 indicates that top 5% of data will be reduced to 95% quantile and bottom 5% to 5% quantile (default: 0.9)" />
+                <param name="only_top" type="boolean" label="Fix quantile" checked="False" truevalue="TRUE" falsevalue="FALSE" help="If checked the the bottom quantile is fixed to 0." />
+            </when>
+        </conditional>
+
+        <param name="cutoff" label="Cutoff Length" type="integer" value="1" min="0" size="3" help="Only inserts of this length or longer will be used for processing." />
+        <param name="nt_offset" label="Nucleotide Offset" type="integer" value="1" size="3" help="How many nucleotides before modification does the reverse transcription terminate? e.g. for HRF-Seq offset = 1" />
+
+        <conditional name="bedgraph">
+            <param name="check" type="select" label="Produce BedGraph output" help="Can be displayed directly on UCSC browser. One file per normalisation method." >
+                <option value="no" selected="True">No</option>
+                <option value="yes">Yes</option>
+            </param>
+            <when value="yes">
+                <param name="bed_file" type="data" format="bed" label="Transcripts ins BED format" help="12 column BED file containing trancript definitions." />
+                <param name="genome" type="text" label="Genome Build" help="E.g. hg19" />
+                <param name="track_name" type="text" label="Track Name" size="20" value="Track Name" />
+            </when>
+            <when value="no" />
+        </conditional>
+<!--	<param name="plots" type="boolean" checked="False" truevalue="True" falsevalue="False" label="Produce plots" help="pdf format" /> -->
+    </inputs>
+
+    <outputs>
+        <data format="tabular" name="normalized" label="${tool.name} on ${on_string} (tabular)" from_work_dir="output_dir/norm_df.txt" />
+        <data format="bedgraph" name="bedgraph_dtcr" label="${tool.name} on ${on_string}: dTCR (bedGraph)" from_work_dir="output_dir/dtcr.bedgraph">
+            <filter> bedgraph['check'] == 'yes' and dtcr['check'] == 'yes' </filter>
+            <actions>
+                <conditional name="bedgraph.check">
+                    <when value="yes">
+                        <action type="metadata" name="dbkey">
+                            <option type="from_param" name="bedgraph.genome" />
+                        </action>
+                    </when>
+                </conditional>
+            </actions>
+        </data>
+        <data format="bedgraph" name="bedgraph_slograt" label="${tool.name} on ${on_string}: Smoot Log2ratio (bedGraph)" from_work_dir="output_dir/slograt.bedgraph">
+            <filter> bedgraph['check'] == 'yes' and slograt['check'] == 'yes' </filter>
+            <actions>
+                <conditional name="bedgraph.check">
+                    <when value="yes">
+                        <action type="metadata" name="dbkey">
+                            <option type="from_param" name="bedgraph.genome" />
+                        </action>
+                    </when>
+                </conditional>
+            </actions>
+        </data>
+        <data format="bedgraph" name="bedgraph_swinsor" label="${tool.name} on ${on_string}: Smooth Winsorisation (bedGraph)" from_work_dir="output_dir/swinsor.bedgraph">
+            <filter> bedgraph['check'] == 'yes' and swinsor['check'] == 'yes' </filter>
+            <actions>
+                <conditional name="bedgraph.check">
+                    <when value="yes">
+                        <action type="metadata" name="dbkey">
+                            <option type="from_param" name="bedgraph.genome" />
+                        </action>
+                    </when>
+                </conditional>
+            </actions>
+        </data>
+    </outputs>
+
+    <tests>
+    </tests>
+
+    <help>
+**What it does**
+
+Normalize tool performs termini based signal detection using summarized counts of sequenced reads (**Read Counts**) or sets of reads carrying the same barcode seqeuence (**Unique Barcodes**). The number of unique barcodes can be converted to Estimated Unique Counts (EUCs) by correcting for the existence of distinct barcodes of the same sequence with (Fu et al., 2011) or without (Kielpinski and Vinther, 2014) the assumption that all barcodes have the same probability of being captured.
+
+------
+
+**Inputs**
+
+**Unique Barcodes** or **Read Counts** files produced by *Summarize Unique Barcodes* tool for treated and control samples. If deltaTCR of Smooth Log2 Ratio is desired a Control files are required.
+
+**k2n file(s)** is (are) required if "HRF-Seq" is selected as the "EUC" method.
+
+**Reference sequences** in FASTA format. Use the file that you produced the read alignment with.
+
+------
+
+**EUC method**
+
+  * **Counts** - Preserves the count of unique barcodes or read counts (depending on the input). It is the only suitable method for reading-in “Read Counts” file and an applicable method when the highest observed unique barcode count is lower than the square root of the count of all possible barcode combinations (Casbon et al., 2011).
+
+  * **Fu** - Allows different barcodes to share the same sequence and assumes equal probability of ligating each barcode sequence (Fu et al., 2011). When selected the value of the random barcode complexity must be specified (e.g. barcode signature NWTRYSNNNN complexity equals 4×2×1×2×2×2×4×4×4×4 = 16384).
+
+  * **HRF-Seq** - Similar to "Fu" but the probability of ligating different barcodes is estimated via observed frequencies of nucleotides at each barcode position (Kielpinski and Vinther, 2014). Requires k2n files for both treated and control samples.
+
+------
+
+**Normalization methods**
+
+For a detailed description read (reference to the chapter)
+
+------
+
+**Outputs**
+
+
+    </help>
+
+    <citations>
+        <citation type="doi">10.1093/nar/gku167</citation>
+        <citation type="doi">10.1073/pnas.1017621108</citation>
+        <citation type="doi">10.1093/nar/gkr217</citation>
+    </citations>
+
+</tool>
