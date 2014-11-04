@@ -210,7 +210,7 @@ fi
 
 if [ "$k2n" == "True" ]; then
     bar_length=$(head -n 1 $barcodes | cut -f 2 | xargs expr length)
-    Rscript $R_SCRIPT_PATH/k2n.R -m merged_temp.gz -c $output_dir/read_counts.txt -b ${max_observed_barcodes} -l $bar_length -o $output_dir/k2n.txt
+    Rscript $R_SCRIPT_PATH/k2n.R merged_temp.gz $output_dir/read_counts.txt ${max_observed_barcodes} $bar_length $output_dir/k2n.txt
 fi
 
 #Remove temp files
