@@ -1,12 +1,14 @@
-<tool id="rnastr_normalization" version="0.1" name="Normalize" force_history_refresh="True">
+<tool id="rna_probing_normalize" version="0.1" name="Normalize" force_history_refresh="True">
     <description>RNA probing data </description>
     <requirements>
-	<requirement type="package" version="3.1.0">R</requirement>
-	<requirement type="package" version="1.0.0">RNAstr</requirement>
+        <requirement type="package" version="3.1.1">R_3_1_1</requirement>
+        <requirement type="R-module">RNAprobR</requirement>
+        <requirement type="package" version="1.0.0">RNAprobR</requirement>
+        <requirement type="set_environment">RNA_PROBING_SCRIPT_PATH</requirement>
     </requirements>
 
-    <command>
-        /home/nikos/software/R-3.1.1/bin/Rscript /galaxy-internal/galaxy/galaxy-dist/tools/rna_probing/normalize.R
+    <command interpreter="Rscript">
+        normalize.R
 
         -t $treated
         -c $control

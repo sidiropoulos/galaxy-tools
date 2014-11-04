@@ -1,28 +1,27 @@
-<tool id="rnastr_preprocessing" version="0.2" name="Preprocessing" force_history_refresh="True">
+<tool id="rna_probing_preprocessing" version="0.2" name="Preprocessing" force_history_refresh="True">
     <description>RNA probing data</description>
+
     <requirements>
-        <requirement type="package" version="1.4.2">cutadapt</requirement>
-	<requirement type="package" version="0.1.18">samtools</requirement>
-	<requirement type="package" version="2.1.0">bowtie2</requirement>
+       <requirement type="package" version="4.1.0">gnu_awk</requirement>
+       <requirement type="set_environment">RNA_RPOBING_SCRIPT_PATH</requirement>
     </requirements>
 
     <command interpreter="bash">
         preprocessing.sh
 
-	## Inputs
-	-1 $library.input1
+        ## check if paired-end
+        #if str( $library.type ) == "paired"
+            -2 $LIbrary.input2
+        #end if
 
-	## Barcode sequence
-	-b '$library.barcode_seq'
+        ## Inputs
+        -1 $library.input1
 
-	## Trimming length
-	-t $trim
+        ## Barcode sequence
+        -b '$library.barcode_seq'
 
-	## check if paired-end
-	#if str( $library.type ) == "paired"
-	    -2 $LIbrary.input2
-	#end if
-
+        ## Trimming length
+        -t $trim
     </command>
 
     <inputs>
