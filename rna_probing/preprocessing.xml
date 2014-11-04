@@ -11,7 +11,7 @@
 
         ## check if paired-end
         #if str( $library.type ) == "paired"
-            -2 $LIbrary.input2
+            -2 $library.input2
         #end if
 
         ## Inputs
