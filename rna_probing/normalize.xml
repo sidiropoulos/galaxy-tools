@@ -1,5 +1,5 @@
 <tool id="rna_probing_normalize" version="0.1" name="Normalize" force_history_refresh="True">
-    <description>RNA probing data </description>
+    <description>RNA probing signal</description>
     <requirements>
         <requirement type="package" version="3.1.1">R_3_1_1</requirement>
         <requirement type="R-module">RNAprobR</requirement>
