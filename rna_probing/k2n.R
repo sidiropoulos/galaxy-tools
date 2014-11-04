@@ -36,7 +36,7 @@ for( h in 1:ncol( nt_counts ) ){
     j <- 1
     for( nt_local in c( "A","C","G","T" ) ) {
         nt_counts[ j, h ] <- sum( substr( as.character( barcodes_nt ), h, h) == nt_local )
-	j <- j+1
+        j <- j + 1
     }
 }
 

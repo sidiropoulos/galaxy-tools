@@ -17,9 +17,10 @@ Input arguments:
 -p: Set priming position to a fixed value.
 -t: Trim untemplated nucleotides.
 -k: Produce k2n file. Warning: Can be sloooow!
+-r: Rscript path
 -o: Output folder (default: "output_dir")
 -------------------------------------
-Usage : summarize_unique_barcodes.sh -f <BAM_file> -b <BARCODES> -p <PRIMING_POSITION> -t -k
+Usage : summarize_unique_barcodes.sh -f <BAM_file> -b <BARCODES> -p <PRIMING_POSITION> -t -k -r <R_SCRIPT_PATH>
 End-of-message
 exit
 }
