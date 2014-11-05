@@ -1,9 +1,16 @@
 #!/bin/bash
 
-############################################################
-#Create table of fragments containing coordinates[RNA molecule, start,end], number of mapped reads, number of unique barcodes and 3'most nucleotide of cDNA (on that was ligated to)
-############################################################
-#Remove untemplated nucleotides and create positions_temp file
+####################################################################################################
+#Copyright (C) 2014 Lukasz Kielpinski, Nikos Sidiropoulos
+
+#This program is free software: you can redistribute it and/or modify it under the terms of the
+#GNU General Public License as published by the Free Software Foundation, either version 3 of the
+#License, or (at your option) any later version.
+
+#This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+#even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#GNU General Public License for more details (http://www.gnu.org/licenses/).
+####################################################################################################
 
 function print_help {
 cat <<End-of-message
@@ -24,7 +31,6 @@ Usage : summarize_unique_barcodes.sh -f <BAM_file> -b <BARCODES> -p <PRIMING_POS
 End-of-message
 exit
 }
-
 
 #defaults
 output_dir="output_dir"
@@ -63,7 +69,7 @@ fi
 
 mkdir -p $output_dir
 
-#Check if bamfile contains single or paired-end data
+#Check if bamfile contains single or paired-end reads
 samtools view -f 0x1 $bamfile | head -n 1 > paired
 
 if [ -s paired ]; then
@@ -104,6 +110,7 @@ if [ -s paired ]; then
 
     {return_offset(0);counter[4]++}
     END{print("No trimming:",counter[0],", out of which not recognized MD field for:",counter[4],"; 1 nt trimmed:", counter[1],"; 2 nt trimmed:", counter[2],"; 3 nt trimmed:",counter[3]) > out}' | sort -S1G -k1,1 | gzip > positions_temp_sorted.gz
+
 else
     #single-end
     samtools view $bamfile | awk 'BEGIN{OFS="\t"}{if(substr($0,1,1)!="@"){print}}' - | awk -v out="${output_dir}/trimming_stats.txt" -v flag="${trim_flag}" 'BEGIN{OFS="\t";counter[0]=0;counter[1]=0;counter[2]=0;counter[3]=0;counter[4]=0}
@@ -145,16 +152,16 @@ else
 
 fi
 
-# Computing barcode length (Use the first line and compute the string length of the second column
+#Computing barcode length (Use the first line and compute the string length of the second column)
 if [ "$barcodes" != "None" ]; then
 
     TMP=`head -1 $barcodes | awk '{print $2}'`
     BAR_LEN=`echo ${#TMP}`
 
-    # Remove "@" from barcodes and sort them
+    #Remove "@" from barcodes and sort them
     sed 's/^.//' $barcodes | sort -k1,1 -S1G | gzip > barcodes_temp_sorted.gz
 
-    # Merge poistions and barcodes
+    #Merge poistions and barcodes
     join -1 1 <(zcat positions_temp_sorted.gz) <(zcat barcodes_temp_sorted.gz) | cut -f 2,3,4,5 -d " " | awk '{if($4 !~ /N/){print}}' | awk -v bar_len="${BAR_LEN}" '{if(length($4)==bar_len){print}}' | gzip > merged_temp.gz
 
     rm barcodes_temp_sorted.gz
@@ -163,19 +170,19 @@ else
     zcat positions_temp_sorted.gz | cut -f 2,3,4 | gzip > merged_temp.gz
 fi
 
-# If the experiment is single-end
+#If the experiment is single-end set NA values to the priming column.
 if [ ! -s paired ]; then
     zcat merged_temp.gz | awk '{print $1, $2, "NA", $4, $5}' - > merged_temp2
     cat merged_temp2 | gzip > merged_temp.gz
 fi
 
-#### If priming flag is set....
+#Fix priming position
 if [ ! -z $priming_pos ]; then
     zcat merged_temp.gz | awk -v pos="${priming_pos}" '{print $1, $2, pos, $4, $5}' - > merged_temp2
     cat merged_temp2 | gzip > merged_temp.gz
 fi
 
-#File summary.gz columns: RNA_ID, Start, End, barcode sequence, sequenced_count[=number of sequenced fragments fulfilling previous requiremnts]
+#File summary.txt columns: RNA_ID, Start, End, barcode sequence, sequenced_count[=number of sequenced fragments fulfilling previous requiremnts]
 
 zcat merged_temp.gz | awk '{barcode[$1][$2][$3][$4]++}END{
 for(RNA in barcode){
@@ -183,14 +190,14 @@ for(start_position in barcode[RNA]){
 for(end_position in barcode[RNA][start_position]){
 for(barseq in barcode[RNA][start_position][end_position]){print RNA,start_position,end_position,barseq,barcode[RNA][start_position][end_position][barseq]}}}}}' > $output_dir/summary.txt
 
-#File unique_barcodes columns: RNA_ID, Start, End, number of unique barcodes observed for this fragment [PROBLEM: How to treat the different 3cdns for the same fragment? if the template was homogenous then it should be always the same]
+#File unique_barcodes.txt columns: RNA_ID, Start, End, number of unique barcodes observed for this fragment.
 
 awk '{barcode[$1][$2][$3]++}END{
 for(RNA in barcode){
 for(start_position in barcode[RNA]){
 for(end_position in barcode[RNA][start_position]){print RNA "\t" start_position "\t" end_position "\t" barcode[RNA][start_position][end_position]}}}}' $output_dir/summary.txt > $output_dir/unique_barcodes.txt &
 
-#read_counts.gz colums: RNA_ID, Start, End, sequenced_count
+#File read_counts.txt colums: RNA_ID, Start, End, sequenced_count
 
 zcat merged_temp.gz | awk '{barcode[$1][$2][$3]++}END{
 for(RNA in barcode){
@@ -199,6 +206,7 @@ for(end_position in barcode[RNA][start_position]){print RNA "\t" start_position 
 
 wait
 
+#Print the maximum observed barcodes value. Usefull to assess the necessity of producing the k2n file.
 if [ "$barcodes" != "None" ]; then
 
     cut -f 4 $output_dir/unique_barcodes.txt | sort -S1G -rn > sorted_bars
@@ -208,6 +216,7 @@ if [ "$barcodes" != "None" ]; then
     rm sorted_bars
 fi
 
+#Produce k2n file
 if [ "$k2n" == "True" ]; then
     bar_length=$(head -n 1 $barcodes | cut -f 2 | xargs expr length)
     Rscript $R_SCRIPT_PATH/k2n.R merged_temp.gz $output_dir/read_counts.txt ${max_observed_barcodes} $bar_length $output_dir/k2n.txt

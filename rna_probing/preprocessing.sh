@@ -1,11 +1,18 @@
 #!/bin/bash
 
-#Preprocessing workflow - trimming adapters, barcodes etc
+####################################################################################################
+#Copyright (C) 2014 Lukasz Kielpinski, Nikos Sidiropoulos
 
-# Barcode in the oligo used: NWTRYSNNNN
-# Which means that each proper read must begin with: NNNN(C|G)(A|G)(C|T)A(A|T)N
-# As regex:
-# ^[ACGT][ACGT][ACGT][ACGT][CG][AG][CT][A][AT][ACGT]
+#This program is free software: you can redistribute it and/or modify it under the terms of the
+#GNU General Public License as published by the Free Software Foundation, either version 3 of the
+#License, or (at your option) any later version.
+
+#This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+#even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#GNU General Public License for more details (http://www.gnu.org/licenses/).
+####################################################################################################
+
+#Preprocessing workflow - Read debarcoding and trimming.
 
 function print_help {
 cat <<End-of-message
@@ -60,22 +67,26 @@ if [ -z "$barcode" ]; then
 fi
 BAR_LENGTH=`eval echo ${#barcode}`
 
-#########################################################################################
+###################################################################################################
+# Convert the Barcode signature to a regular exression.
 
+# Example:
+#
+# Barcode in the oligo used: NWTRYSNNNN
+# Which means that each proper read must begin with: NNNN(C|G)(A|G)(C|T)A(A|T)N
+# As regex:
+# ^[ACGT][ACGT][ACGT][ACGT][CG][AG][CT][A][AT][ACGT]
 # Reverse complement the barcode sequence and create a regular expression.
 
 REV_COMPLEMENT=$(perl -0777ne's/\n //g; tr/ATGCatgcNnYyRrKkMmBbVvDdHh/TACGtacgNnRrYyMmKkVvBbHhDd/; print scalar reverse $_;' <(echo $barcode))
 
 REG_EXP=$(sed 's/A/[A]/g;s/C/[C]/g;s/G/[G]/g;s/T/[T]/g;s/R/[AG]/g;s/Y/[CT]/g;s/S/[GC]/g;s/W/[AT]/g;s/K/[GT]/g;s/M/[AC]/g;s/B/[CGT]/g;s/D/[AGT]/g;s/H/[ACT]/g;s/V/[ACG]/g;s/N/[AGCTN]/g;' <<< $REV_COMPLEMENT)
 
-########################################################################
-#1. Remove all the reads that do not start with the signature
+###################################################################################################
+#Remove reads that do not start with the signature (Read1)
 
-# (first awk removes them, second awk removes corresponding quality strings) followed by cutadapt.
-
-# After cutadapt, remove last 15 nt - may be derived from the random primer [should be optional, as the user may: 1) use different random primer length, 2) have short reasd and would lose too much info] and remove all the reads that are shorter than 30 nt
-
-# (10 nt barcode + 20 nt for mapping)
+#First awk removes them, second awk removes corresponding quality strings.
+#Remove last N nt - may be derived from the random primers.
 
 awk '{if(NR%4==2){if(/^'"$REG_EXP"'/){print}else{print ""}}else{print}}' $read1 |
 
@@ -95,38 +106,34 @@ wait
 
 mv trimming_stats.error $output_dir/trimming_stats.txt
 
-########################################################################
-#2. Trim the adapter, primer and possible random barcode from the second read
+###################################################################################################
+#Trim primers and possible random barcode
 
 if [ -z "$read2" ]; then
     #single-end
 
-    #3. Remove empty reads - Unecessary
-    #4. Extract the barcode sequence from the first read:
+    #Extract the barcode sequence from the first read:
     zcat R1.fastq.gz | awk -v len="${BAR_LENGTH}" '{if(NR%2==0 && length($1)<20+len){printf("\n")}else{if(NR%2==0){print(substr($0,len+1,length($0)))}else{print($0)}}}' | awk '{print($1)}' > $output_dir/read1.fastq &
 
     zcat R1.fastq.gz | awk -v len="${BAR_LENGTH}" '{if(NR%4==1){print($1)}else{if(NR%4==2){print(substr($0,0,len))}}}' | paste - - > $output_dir/barcodes.txt &
 
     wait
 
-    ########################################################################
-    #5. Remove temp files
-
+    #Remove temp files
     rm R1.fastq.gz
 
 else
     #paired-end
 
+    #Trim primers (Read2)
     awk -v len1="${trim_length}" -v len2="${BAR_LENGTH}" '{if(NR%2==0){print(substr($0,len1+1,(length($0)-len1-len2)))}else{print($0)}}' $read2 |
-
     awk '{if(NR%2==0 && length($1)<20){printf("\n")}else{print}}' | gzip > R2.fastq.gz &
 
     wait
 
-    ########################################################################
-    #3. Remove empty reads - remove each pair from for which at least one read of the pair got removed (they are problematic for tophat mapping)
-    #first define which lines to keep from both fastq files (k for keep, d for discard in the lines_to_keep file)
+    #Remove empty reads - remove each pair from for which at least one read of the pair got removed (they are problematic when mapping)
 
+    #First define which lines to keep from both fastq files (k for keep, d for discard in the lines_to_keep file)
     paste <(zcat R1.fastq.gz) <(zcat R2.fastq.gz) | awk 'BEGIN{OFS="\n"}{if(NR%4==2 && NF==2){print("k","k","k","k")}else{if(NR%4==2 && NF<2){print("d","d","d","d")}}}' > lines_to_keep
 
     paste lines_to_keep <(zcat R1.fastq.gz) | awk '{if($1=="k")print($2,$3)}' | gzip > R1_readsANDbarcodes.fastq.gz &
@@ -135,19 +142,15 @@ else
 
     wait
 
-    rm lines_to_keep
-
     ########################################################################
-    #4. Extract the barcode sequence from the first read:
+    #Extract the barcode sequence from the first read:
     zcat R1_readsANDbarcodes.fastq.gz | awk -v len="${BAR_LENGTH}" '{if(NR%2==0 && length($1)<20+len){printf("\n")}else{if(NR%2==0){print(substr($0,len+1,length($0)))}else{print($0)}}}' | awk '{print($1)}' > $output_dir/read1.fastq &
 
     zcat R1_readsANDbarcodes.fastq.gz | awk -v len="${BAR_LENGTH}" '{if(NR%4==1){print($1)}else{if(NR%4==2){print(substr($0,0,len))}}}' | paste - - > $output_dir/barcodes.txt &
 
     wait
 
-    ########################################################################
-    #5. Remove temp files
-
-    rm R1_readsANDbarcodes.fastq.gz R1.fastq.gz R2.fastq.gz
+    #Remove temp files
+    rm R1_readsANDbarcodes.fastq.gz R1.fastq.gz R2.fastq.gz lines_to_keep
 
 fi
