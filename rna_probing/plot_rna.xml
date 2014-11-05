@@ -1,4 +1,4 @@
-<tool id="rnastr_plot" version="0.1" name="RNA Plot" force_history_refresh="True">
+<tool id="rna_probing_plot" version="1.0.0" name="RNA Plot" force_history_refresh="True">
 
     <description></description>
     <requirements>

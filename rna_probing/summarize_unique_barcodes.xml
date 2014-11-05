@@ -1,4 +1,4 @@
-<tool id="rna_probing_summarize" version="0.1" name="Summarize Unique Barcodes" force_history_refresh="True">
+<tool id="rna_probing_summarize" version="1.0.0" name="Summarize Unique Barcodes" force_history_refresh="True">
     <description></description>
 
     <requirements>

@@ -1,4 +1,4 @@
-<tool id="rna_probing_preprocessing" version="0.2" name="Preprocessing" force_history_refresh="True">
+<tool id="rna_probing_preprocessing" version="1.0.0" name="Preprocessing" force_history_refresh="True">
     <description>RNA probing data</description>
 
     <requirements>
