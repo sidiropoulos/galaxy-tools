@@ -76,8 +76,8 @@
                 <param name="complexity" type="integer" value="" min="1" label="Random barcode complexity (m)" help="Highest possible number of unique barcodes. e.g For 7 nucleotide, fully degenerate random barcodes (NNNNNNN) then m = 16384 (m=4^7)." />
             </when>
             <when value="HRF-Seq">
-                <param name="k2n_treated" type="data" format="text" label="k2n Treated File" help="'Summarize Unique Barcodes' output." />
-                <param name="k2n_control" type="data" format="text" label="k2n Control File" optional="True"  help="'Summarize Unique Barcodes' output." />
+                <param name="k2n_treated" type="data" format="txt" label="k2n Treated File" help="'Summarize Unique Barcodes' output." />
+                <param name="k2n_control" type="data" format="txt" label="k2n Control File" optional="True"  help="'Summarize Unique Barcodes' output." />
             </when>
         </conditional>
         <param name="fasta" type="data" format="fasta" optional="True" label="Reference Fasta sequence" help="Used to report nucleotide at each position." />
