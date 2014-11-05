@@ -20,7 +20,7 @@ spec = matrix(c(
 
 opt = getopt(spec);
 
-suppressMessages(require(RNAstr))
+suppressMessages(require(RNAprobR))
 
 #Read and convert input to GRanges object
 data <- read.table(opt$input, header = TRUE)
