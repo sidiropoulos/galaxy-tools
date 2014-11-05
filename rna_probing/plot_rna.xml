@@ -1,9 +1,16 @@
 <tool id="rnastr_plot" version="0.1" name="RNA Plot" force_history_refresh="True">
 
     <description></description>
-    <requirements />
+    <requirements>
+        <requirement type="package" version="3.1.1">R_3_1_1</requirement>
+        <requirement type="R-module">RNAprobR</requirement>
+        <requirement type="package" version="1.0.0">RNAprobR</requirement>
+        <requirement type="set_environment">RNA_PROBING_SCRIPT_PATH</requirement>
+    </requirements>
 
-    <command>/home/nikos/software/R-3.1.1/bin/Rscript ~/galaxy-dist/tools/rna_probing/plot_rna.R -i $input -t "$transcript" -m $norm_method -c $cutoff -p $plot_type -o $plot > /dev/null </command>
+    <command interpreter="Rscript">
+        plot_rna.R -i $input -t "$transcript" -m $norm_method -c $cutoff -p $plot_type -o $plot > /dev/null
+    </command>
 
     <inputs>
         <param name="input" type="data" format="tabular" label="Input dataset" help="'Normalize' tool tabular output." />
