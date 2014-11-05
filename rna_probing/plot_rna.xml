@@ -46,5 +46,27 @@
     </tests>
 
     <help>
+**What it does**
+
+Produces plots for a given transcript in the tabular file produced by *Normalize* tool (one plot per selected method). If a selected normalizing method is not included in the input file it simply not be plotted.
+
+------
+
+**Example**
+
+Input (head)::
+
+    RNAid           Pos nt  dtcr                    dtcr.p
+    16S_rRNA_E.coli 1   A   0                       0.00787957002462928
+    16S_rRNA_E.coli 2   A   0.000606618229204106    2.87738710042044e-07
+    16S_rRNA_E.coli 3   A   0.00170457733442839     0.0242502062681708
+    16S_rRNA_E.coli 4   T   0.00171914631528914     0.504983784068465
+    16S_rRNA_E.coli 5   T   0.00111252808608504     5.26073688354678e-06
+    16S_rRNA_E.coli 6   G   0.00175507669063296     9.92896700324683e-05
+
+Output (Significance: 1e-08, type: histogram)
+
+.. image:: http://people.binf.ku.dk/slm279/plot.png
+
     </help>
 </tool>

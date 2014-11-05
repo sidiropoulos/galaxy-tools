@@ -212,12 +212,30 @@ Normalize tool performs termini based signal detection using summarized counts o
 
 **Normalization methods**
 
-For a detailed description read (reference to the chapter)
+For a detailed description of the methods used read (publication pending)
 
 ------
 
 **Outputs**
 
+A tab seperated file with normalized signal values:
+
+====== ==============================================================================================
+Column Description
+------ ----------------------------------------------------------------------------------------------
+     1 Transcript identifier
+     2 Position
+     3 Nucleotide
+    4- Normalized signal value followed by a column with a test significance value (where applicable)
+====== ==============================================================================================
+
+.
+
+A BedGraph_ file that can be used for direct data display in the `UCSC Browser`_.
+
+.. _BedGraph: http://genome.ucsc.edu/goldenpath/help/bedgraph.html
+
+.. _UCSC Browser: http://genome.ucsc.edu/
 
     </help>
 
