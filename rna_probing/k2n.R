@@ -1,5 +1,3 @@
-suppressMessages(library('getopt'))
-
 options(stringAsfactors = FALSE, useFancyQuotes = FALSE)
 args <- commandArgs(trailingOnly = TRUE)
 
