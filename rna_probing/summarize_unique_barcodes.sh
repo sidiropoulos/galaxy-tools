@@ -155,7 +155,7 @@ fi
 #Computing barcode length (Use the first line and compute the string length of the second column)
 if [ "$barcodes" != "None" ]; then
 
-    TMP=`head -1 $barcodes | awk '{print $2}'`
+    TMP=$(for line in `cut -f 2 $barcodes`; do if [ ! -z "$line" ]; then echo $line; break; fi; done)
     BAR_LEN=`echo ${#TMP}`
 
     #Remove "@" from barcodes and sort them
@@ -173,13 +173,15 @@ fi
 #If the experiment is single-end set NA values to the priming column.
 if [ ! -s paired ]; then
     zcat merged_temp.gz | awk '{print $1, $2, "NA", $4, $5}' - > merged_temp2
-    cat merged_temp2 | gzip > merged_temp.gz
+    gzip -c merged_temp2 > merged_temp.gz
+    rm merged_temp2
 fi
 
 #Fix priming position
 if [ ! -z $priming_pos ]; then
     zcat merged_temp.gz | awk -v pos="${priming_pos}" '{print $1, $2, pos, $4, $5}' - > merged_temp2
-    cat merged_temp2 | gzip > merged_temp.gz
+    gzip -c merged_temp2 > merged_temp.gz
+    rm merged_temp2
 fi
 
 #File summary.txt columns: RNA_ID, Start, End, barcode sequence, sequenced_count[=number of sequenced fragments fulfilling previous requiremnts]
@@ -218,9 +220,8 @@ fi
 
 #Produce k2n file
 if [ "$k2n" == "True" ]; then
-    bar_length=$(head -n 1 $barcodes | cut -f 2 | xargs expr length)
-    Rscript $R_SCRIPT_PATH/k2n.R merged_temp.gz $output_dir/read_counts.txt ${max_observed_barcodes} $bar_length $output_dir/k2n.txt
+    Rscript $R_SCRIPT_PATH/k2n.R merged_temp.gz $output_dir/unique_barcodes.txt $output_dir/k2n.txt
 fi
 
 #Remove temp files
-rm paired merged_temp.gz positions_temp_sorted.gz
+rm merged_temp.gz positions_temp_sorted.gz paired
