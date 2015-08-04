@@ -58,7 +58,7 @@
             --trackName "$bedgraph.track_name"
         #end if
 
-        -o 'output_dir' > /dev/null
+        -o 'output_dir'
 
     </command>
 
