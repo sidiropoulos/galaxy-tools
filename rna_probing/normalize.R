@@ -3,7 +3,7 @@
 ## Setup R error handling to go to stderr
 options( show.error.messages = FALSE, error = function () { cat( geterrmessage(), file=stderr() ); q( "no", 1, F ) } )
 
-# we need that to not crash galaxy with an UTF8 error on German LC settings.
+# we need that to not crash galaxy with an UTF8 error on LC settings.
 Sys.setlocale("LC_MESSAGES", "en_US.UTF-8")
 
 suppressMessages(library('getopt'))
