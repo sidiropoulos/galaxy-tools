@@ -9,14 +9,20 @@ args <- commandArgs(trailingOnly = TRUE)
 
 # Declare functions
 
-k2n_calc <- function(merged_file, unique_barcode_file, output_file)
+k2n_calc <- function(merged_file, unique_barcode_file, output_file, paired = TRUE)
 {
 
     # Read in inputs:
     merged <- read.table( merged_file )
     colnames(merged) <- c("RNAid", "Start", "End", "Barcodes")
     barcode_length <- max(nchar(as.character(merged$Barcodes)))
-    read_counts <- as.data.frame(table(subset(merged, select = - Barcodes)))
+
+    #Single end
+    if( !paired)
+	read_counts <- as.data.frame(table(subset(merged, select = - (End:Barcodes))))
+    #Paired end
+    else
+        read_counts <- as.data.frame(table(subset(merged, select = - Barcodes)))
     read_counts <- read_counts[read_counts$Freq != 0, ]
 
     max_observed <- max(read.table(unique_barcode_file)[,4])
@@ -30,11 +36,20 @@ k2n_calc <- function(merged_file, unique_barcode_file, output_file)
         barcodes_saturated <- FALSE
 
     # Remove top-quartile of reads:
+    #Single end
+    if (!paired){
+	barcodes_nt <- merged[ do.call(
+            paste, as.list(subset(merged, select = - (End:Barcodes)))) %in%
+                do.call(paste, as.list(read_counts[(
+                    read_counts$Freq ) <= quantile(read_counts$Freq, 0.75),
+                    c("RNAid", "Start") ] ) ) , "Barcodes" ]
+    } else {
     barcodes_nt <- merged[ do.call(
         paste, as.list(subset(merged, select = - Barcodes))) %in%
             do.call(paste, as.list(read_counts[(
                 read_counts$Freq ) <= quantile(read_counts$Freq, 0.75),
                 c("RNAid", "Start", "End") ] ) ) , "Barcodes" ]
+    }
 
     # make the matrix with the nucleotide freqs per position:
     nt_counts <- matrix( nrow = 4, ncol = barcode_length )
@@ -99,5 +114,6 @@ k2n_calc <- function(merged_file, unique_barcode_file, output_file)
 merged <- args[1]
 unique_barcodes <- args[2]
 output <- args[3]
+paired_check <- as.logical(args[4])
 
-k2n_calc( merged, unique_barcodes, output )
+k2n_calc( merged, unique_barcodes, output, paired = paired_check)

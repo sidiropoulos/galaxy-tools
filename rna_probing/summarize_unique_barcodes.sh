@@ -220,7 +220,11 @@ fi
 
 #Produce k2n file
 if [ "$k2n" == "True" ]; then
-    Rscript $R_SCRIPT_PATH/k2n.R merged_temp.gz $output_dir/unique_barcodes.txt $output_dir/k2n.txt
+    if [ ! -s paired ]; then
+        Rscript $R_SCRIPT_PATH/k2n.R merged_temp.gz $output_dir/unique_barcodes.txt $output_dir/k2n.txt FALSE
+    else
+	Rscript $R_SCRIPT_PATH/k2n.R merged_temp.gz $output_dir/unique_barcodes.txt $output_dir/k2n.txt TRUE
+    fi
 fi
 
 #Remove temp files
