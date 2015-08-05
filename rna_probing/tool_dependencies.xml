@@ -10,7 +10,7 @@
         <repository changeset_revision="d9964efbfbe3" name="package_r_3_1_1" owner="fubar"/>
     </package>
     <package name="RNAprobR" version="1.0.0">
-        <repository changeset_revision="cabd73083325" name="package_rna_probing_0_99_0" owner="nikos"/>
+        <repository changeset_revision="4b06a295c27e" name="package_rna_probing_0_99_0" owner="nikos"/>
     </package>
     <set_environment version="1.0">
         <environment_variable name="RNA_PROBING_SCRIPT_PATH" action="set_to">$REPOSITORY_INSTALL_DIR</environment_variable>
